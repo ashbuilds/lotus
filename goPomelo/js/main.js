@@ -1,30 +1,84 @@
-jQuery(document).ready(function($){
-	//open menu
-	$('.cd-menu-trigger').on('click', function(event){
-		event.preventDefault();
-		$('#cd-main-content').addClass('move-out');
-		$('#main-nav').addClass('is-visible');
-		$('.cd-shadow-layer').addClass('is-visible');
-	});
-	//close menu
-	$('.cd-close-menu').on('click', function(event){
-		event.preventDefault();
-		$('#cd-main-content').removeClass('move-out');
-		$('#main-nav').removeClass('is-visible');
-		$('.cd-shadow-layer').removeClass('is-visible');
-	});
+jQuery(function($){
+	var $helper_sideBar = $("._js_sideBar_toggle");
 
-	//clipped image - blur effect
-	set_clip_property();
-	$(window).on('resize', function(){
-		set_clip_property();
+    $helper_sideBar.on('click',function(){
+    	var $this = $(this);
+        var $sideBar = $("#"+$this.attr('data-for'));
+        $sideBar.add($this).toggleClass("active")
 	});
-
-	function set_clip_property() {
-		var $header_height = $('.cd-header').height(),
-			$window_height = $(window).height(),
-			$header_top = $window_height - $header_height,
-			$window_width = $(window).width();
-		$('.cd-blurred-bg').css('clip', 'rect('+$header_top+'px, '+$window_width+'px, '+$window_height+'px, 0px)');
-	}
 });
+
+//Google Map
+var map;
+var infoWindow;
+var service;
+
+
+function initMap() {
+
+    map = new google.maps.Map(document.getElementById('mapview'), {
+        center: {lat: 13.7563, lng: 100.5018},
+        zoom: 12,
+        zoomControl: true,
+        mapTypeControl: false,
+        scaleControl: true,
+        streetViewControl: false,
+        rotateControl: false,
+        fullscreenControl: true,
+        styles: [{
+            stylers: [{ visibility: 'simplified' }]
+        }, {
+            elementType: 'labels',
+            stylers: [{ visibility: 'off' }]
+        }]
+    });
+
+    infoWindow = new google.maps.InfoWindow();
+    service = new google.maps.places.PlacesService(map);
+
+    // The idle event is a debounced event, so we can query & listen without
+    // throwing too many requests at the server.
+    map.addListener('idle', performSearch);
+}
+
+function performSearch() {
+    var request = {
+        bounds: map.getBounds(),
+        keyword: 'Tesco Lotus Bangkok',
+		type:'store'
+    };
+    service.radarSearch(request, callback);
+}
+
+function callback(results, status) {
+    if (status !== google.maps.places.PlacesServiceStatus.OK) {
+        console.error(status);
+        return;
+    }
+    for (var i = 0, result; result = results[i]; i++) {
+        addMarker(result);
+    }
+}
+
+function addMarker(place) {
+    var marker = new google.maps.Marker({
+        map: map,
+        position: place.geometry.location,
+        icon: {
+            url: 'https://developers.google.com/maps/documentation/javascript/images/circle.png',
+            anchor: new google.maps.Point(10, 10),
+            scaledSize: new google.maps.Size(10, 17)
+        }
+    });
+
+    google.maps.event.addListener(marker, 'click', function() {
+        service.getDetails(place, function(result, status) {
+            if (status !== google.maps.places.PlacesServiceStatus.OK) {
+                console.error(status);
+                return;
+            }
+            infoWindow.setContent(result.name);
+            infoWindow.open(map, marker);
+        });
+    });
+}

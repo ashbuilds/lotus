@@ -3,42 +3,32 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-
 	<link href='http://fonts.googleapis.com/css?family=Ubuntu:400,700' rel='stylesheet' type='text/css'>
-
-	<link rel="stylesheet" href="css/reset.css"> <!-- CSS reset -->
-	<link rel="stylesheet" href="css/style.css"> <!-- Resource style -->
-	<script src="js/modernizr.js"></script> <!-- Modernizr -->
-  	
-	<title>Full page intro and navigation</title>
+	<link rel="stylesheet" href="../libraries/css/normalize.css">
+	<link rel="stylesheet" href="../libraries/fontawesome/css/font-awesome.css">
+	<link rel="stylesheet" href="css/style.css">
+	<title>Lotus Locator</title>
 </head>
 <body>
-<main id="cd-main-content">
-	<section id="cd-intro">
-		<h1>Full Page Intro &amp; Navigation</h1>
-
-		<header class="cd-header">
-			<div id="cd-logo"><a href="#0"><img src="img/cd-logo.svg" alt="Logo"></a></div>
-			<a class="cd-menu-trigger" href="#main-nav">Menu<span></span></a>
-		</header>
-		<div class="cd-blurred-bg"></div>
-	</section> <!-- cd-intro -->
-</main>
-
-<div class="cd-shadow-layer"></div>
-
-<nav id="main-nav">
-	<ul>
-		<li><a href="#0"><span>Tour</span></a></li>
-		<li><a href="#0"><span>Pricing</span></a></li>
-		<li><a href="#0"><span>Labs</span></a></li>
-		<li><a href="#0"><span>About</span></a></li>
-		<li><a href="#0"><span>Contact us</span></a></li>
-	</ul>
-	<a href="#0" class="cd-close-menu">Close<span></span></a>
-</nav>
-
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<script src="js/main.js"></script> <!-- Resource jQuery -->
+<div class="css_main-wrapper bg_primary">
+	<header>
+		<ul>
+			<li class="bg_secondary css_default-transition _js_sideBar_toggle" data-for="toggleSideBar">
+				<i class="fa fa-cog" aria-hidden="true"></i>
+			</li>
+		</ul>
+	</header>
+	<div class="css_container css_flex-container">
+		<aside id="toggleSideBar" class="css_default-transition"></aside>
+		<article class="css_default-transition">
+			<div class="css_map-container _js_map-container">
+				<div id="mapview" class="css_map-container"></div>
+			</div>
+		</article>
+	</div>
+</div>
+<script src="../libraries/js/jquery/jquery-3.1.1.min.js"></script> <!-- jQuery -->
+<script src="js/main.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD2-5jVs26nxz9B0Uu9L6aEjypkrlwGZsY&callback=initMap&libraries=places,visualization" async defer></script>
 </body>
 </html>
