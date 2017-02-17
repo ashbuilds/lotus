@@ -3,5 +3,5 @@ $url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=siam+ba
 $json = file_get_contents($url);
 
 //$json = json_decode($request_body);
-echo $json;
+echo json_decode($json);
 ?>
