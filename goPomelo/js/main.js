@@ -13,16 +13,13 @@ jQuery(function($){
   .done(function() {
     console.log( "second success" );
   })
-  .fail(function() {
-    console.log( "error" );
+  .fail(function(err) {
+    console.log( "error",err );
   })
   .always(function() {
     console.log( "complete" );
   });
-	
-	jqxhr.complete(function() {
-  console.log( "second complete" );
-});
+
 	
 });
 
