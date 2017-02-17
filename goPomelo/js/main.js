@@ -7,18 +7,7 @@ jQuery(function($){
         $sideBar.add($this).toggleClass("active")
 	});
 	
-		var jqxhr = $.getJSON( "/datahelper", function(data) {
-  console.log( "success" ,data);
-})
-  .done(function() {
-    console.log( "second success" );
-  })
-  .fail(function(err) {
-    console.log( "error",err );
-  })
-  .always(function() {
-    console.log( "complete" );
-  });
+	
 
 	
 });
@@ -27,7 +16,7 @@ jQuery(function($){
 var map;
 var infoWindow;
 var service;
-
+var filterType="atm";
 //https://maps.googleapis.com/maps/api/place/textsearch/json?query=siam+bank+and+atm+in+thailand&location=13.7563,100.5018&radius=10000&key=AIzaSyD2-5jVs26nxz9B0Uu9L6aEjypkrlwGZsY
 
 
@@ -55,11 +44,25 @@ function initMap() {
 
     // The idle event is a debounced event, so we can query & listen without
     // throwing too many requests at the server.
-    map.addListener('idle', performSearch);
+	
+		$.ajax({
+    url: "./datahelper/",
+    dataType: "JSON",
+    success: function(json){
+        //here inside json variable you've the json returned by your PHP
+		json = JSON.parse(json);	
+		//map.addListener('idle',function(){
+		 performSearch(json)
+		 //});
+    }
+});
+   
 }
 
-function performSearch() {
-    var request = {
+function performSearch(json) {
+
+
+   /* var request = {
         bounds: map.getBounds(),
 	   radius:"10",
 	   address:"Bangkok",
@@ -71,14 +74,29 @@ function performSearch() {
 		type : "store"
         
     };
-    service.radarSearch(request, callback);
+    service.radarSearch(request, callback);*/
+	console.log("json",json);
+	
+	if(filterType){
+	json = json["results"].filter(function(o){
+	console.log(o.name);
+	//return o.name.toLowerCase().indexOf("CDM")>-1; // mean its a cash deposit machine
+	return o.types[0]==filterType;    //replace with "atm"  or "bank" as per search
+	});
+	}
+	else{
+	json = json["results"];
+	}
+	
+	callback(json)
 }
 
 function callback(results, status) {
-    if (status !== google.maps.places.PlacesServiceStatus.OK) {
+   /* if (status !== google.maps.places.PlacesServiceStatus.OK) {
         console.error(status);
         return;
-    }
+    }*/
+	console.log("results",results);
     for (var i = 0, result; result = results[i]; i++) {
         addMarker(result);
     }
