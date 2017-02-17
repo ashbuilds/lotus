@@ -6,6 +6,24 @@ jQuery(function($){
         var $sideBar = $("#"+$this.attr('data-for'));
         $sideBar.add($this).toggleClass("active")
 	});
+	
+		var jqxhr = $.getJSON( "/datahelper", function(data) {
+  console.log( "success" ,data);
+})
+  .done(function() {
+    console.log( "second success" );
+  })
+  .fail(function() {
+    console.log( "error" );
+  })
+  .always(function() {
+    console.log( "complete" );
+  });
+	
+	jqxhr.complete(function() {
+  console.log( "second complete" );
+});
+	
 });
 
 //Google Map
