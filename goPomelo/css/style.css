@@ -6,13 +6,13 @@
   background: #1d9693;
   color:#f3f3f3;
 }
-.css_flex-container{
-  display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
-  display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
-  display: -ms-flexbox;      /* TWEENER - IE 10 */
-  display: -webkit-flex;     /* NEW - Chrome */
-  display: flex;
-}
+/*.css_flex-container{*/
+  /*display: -webkit-box;      !* OLD - iOS 6-, Safari 3.1-6 *!*/
+  /*display: -moz-box;         !* OLD - Firefox 19- (buggy but mostly works) *!*/
+  /*display: -ms-flexbox;      !* TWEENER - IE 10 *!*/
+  /*display: -webkit-flex;     !* NEW - Chrome *!*/
+  /*display: flex;*/
+/*}*/
 .css_default-transition{
   transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
   -webkit-transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -20,6 +20,13 @@
   -o-transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
   -ms-transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
+/*.css_default-transition{*/
+  /*transition: all 200ms linear;*/
+  /*-webkit-transition: all 200ms linear;*/
+  /*-moz-transition: all 200ms linear;*/
+  /*-o-transition: all 200ms linear;*/
+  /*-ms-transition: all 200ms linear;*/
+/*}*/
 
 [class*='-toggle-helper'] {
   display: none;
@@ -57,23 +64,48 @@ html,body{
   opacity: 0.6;
 }
 .css_container{
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
   width: 100%;
   height: 100%;
-}
-.css_container article{
-  width:100%;
+  white-space: nowrap;
+  font-size:0;/*for display inline-block*/
 }
 .css_container aside{
   width:0;
+  height:100%;
+  font-size: medium;
+  display: inline-block;
+}
+.css_container article{
+  width:100%;
+  height:100%;
+  display: inline-block;
+  font-size: medium;
+}
+.css_container article>div.css_map-container>div{
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+
 }
 .css_container aside.active{
   width:300px;
 }
-.css_container aside.active~article{
+.css_container aside.active+article{
   width: calc(100% - 300px);
   width: -o-calc(100% - 300px);
   width: -ms-calc(100% - 300px);
+}
+.css_container aside.active+article>div.css_map-container>div{
+  border-radius: 5px;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  backface-visibility:hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+}
+.css_container aside.active+article>div.css_map-container{
+  transform: scale(0.9);
+  -webkit-transform: scale(0.9);
+  -moz-transform: scale(0.9);
+  -o-transform: scale(0.9);
 }
 .css_container article .css_map-container{
   width:100%;
