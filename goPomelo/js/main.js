@@ -13,6 +13,8 @@ var map;
 var infoWindow;
 var service;
 
+//https://maps.googleapis.com/maps/api/place/textsearch/json?query=siam+bank+and+atm+in+thailand&location=13.7563,100.5018&radius=10000&key=AIzaSyD2-5jVs26nxz9B0Uu9L6aEjypkrlwGZsY
+
 
 function initMap() {
 
@@ -25,12 +27,12 @@ function initMap() {
         streetViewControl: false,
         rotateControl: false,
         fullscreenControl: true,
-        styles: [{
+       /* styles: [{
             stylers: [{ visibility: 'simplified' }]
         }, {
             elementType: 'labels',
             stylers: [{ visibility: 'off' }]
-        }]
+        }]*/
     });
 
     infoWindow = new google.maps.InfoWindow();
@@ -44,8 +46,15 @@ function initMap() {
 function performSearch() {
     var request = {
         bounds: map.getBounds(),
-        keyword: 'Tesco Lotus Bangkok',
-		type:'store'
+	   radius:"10",
+	   address:"Bangkok",
+	    componentRestrictions: {
+        country: 'Thailand'
+    },
+        keyword: "Tesco Lotus",
+		name:"Tesco Lotus",
+		type : "store"
+        
     };
     service.radarSearch(request, callback);
 }
