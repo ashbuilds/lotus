@@ -12,6 +12,33 @@ jQuery(function($){
 	
 });
 
+function getData(info,cb,searchData){  //should be call from 2nd time,server
+
+$.ajax({
+		type: "post",
+    url: "./datahelper/",
+	data:{data:JSON.stringify(info)},
+    dataType: "JSON",
+    success: function(json){
+        //here inside json variable you've the json returned by your PHP
+		json = JSON.parse(json);
+		if(!info.pagetoken){
+		info.pagetoken = json.next_page_token;
+		searchData = json;
+		setTimeout(function(){getData(info,cb,searchData)},0);
+		}
+		else{
+		json.results = searchData.results.concat(json.results)
+		
+		cb(json)
+		}
+		
+    },
+	error:function(err){ console.log(err) }
+});
+
+}
+
 //Google Map
 var map;
 var infoWindow;
@@ -44,23 +71,22 @@ function initMap() {
 
     // The idle event is a debounced event, so we can query & listen without
     // throwing too many requests at the server.
+	var data = {
+	location:"13.7563,100.5018",
+	lang:"en",
+	pagetoken:""
+	};
 	
-		$.ajax({
-    url: "./datahelper/",
-    dataType: "JSON",
-    success: function(json){
-        //here inside json variable you've the json returned by your PHP
-		json = JSON.parse(json);	
-		//map.addListener('idle',function(){
-		 performSearch(json)
-		 //});
-    }
-});
+	getData(data,function(res){
+	console.log("res:",res)
+	performSearch(res)
+	});
+		
    
 }
-
+window.lastJson;
 function performSearch(json) {
-
+lastJson = json;
 
    /* var request = {
         bounds: map.getBounds(),
@@ -75,13 +101,16 @@ function performSearch(json) {
         
     };
     service.radarSearch(request, callback);*/
-	console.log("json",json);
+//	console.log("json",json);
 	
 	if(filterType){
 	json = json["results"].filter(function(o){
-	console.log(o.name);
-	//return o.name.toLowerCase().indexOf("CDM")>-1; // mean its a cash deposit machine
+	if(filterType=="cdm"){
+	return o.name.toLowerCase().indexOf("cdm")>-1; // mean its a cash deposit machine
+}
+else{
 	return o.types[0]==filterType;    //replace with "atm"  or "bank" as per search
+}
 	});
 	}
 	else{
