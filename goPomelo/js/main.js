@@ -1,155 +1,197 @@
-jQuery(function($){
-	var $helper_sideBar = $("._js_sideBar_toggle");
-
-    $helper_sideBar.on('click',function(){
-    	var $this = $(this);
-        var $sideBar = $("#"+$this.attr('data-for'));
-        $sideBar.add($this).toggleClass("active")
-	});
-	
-	
-
-	
-});
-
-function getData(info,cb,searchData){  //should be call from 2nd time,server
-
-$.ajax({
-		type: "post",
-    url: "./datahelper/",
-	data:{data:JSON.stringify(info)},
-    dataType: "JSON",
-    success: function(json){
-        //here inside json variable you've the json returned by your PHP
-		json = JSON.parse(json);
-		if(!info.pagetoken){
-		info.pagetoken = json.next_page_token;
-		searchData = json;
-		setTimeout(function(){getData(info,cb,searchData)},0);
-		}
-		else{
-		json.results = searchData.results.concat(json.results)
-		
-		cb(json)
-		}
-		
-    },
-	error:function(err){ console.log(err) }
-});
-
-}
-
-//Google Map
-var map;
-var infoWindow;
-var service;
-var filterType="atm";
-//https://maps.googleapis.com/maps/api/place/textsearch/json?query=siam+bank+and+atm+in+thailand&location=13.7563,100.5018&radius=10000&key=AIzaSyD2-5jVs26nxz9B0Uu9L6aEjypkrlwGZsY
+jQuery(function($) {
 
 
-function initMap() {
+    var map;
+    var infoWindow;
+    var service;
+    var filterType = [];
+    var lastJson;
+    var markers = [];
+    var $helper_sideBar = $("._js_sideBar_toggle");
+    var $filter_input = $("._js_filter-input");
 
-    map = new google.maps.Map(document.getElementById('mapview'), {
-        center: {lat: 13.7563, lng: 100.5018},
-        zoom: 12,
-        zoomControl: true,
-        mapTypeControl: false,
-        scaleControl: true,
-        streetViewControl: false,
-        rotateControl: false,
-        fullscreenControl: true,
-       /* styles: [{
-            stylers: [{ visibility: 'simplified' }]
-        }, {
-            elementType: 'labels',
-            stylers: [{ visibility: 'off' }]
-        }]*/
-    });
 
-    infoWindow = new google.maps.InfoWindow();
-    service = new google.maps.places.PlacesService(map);
+    var utils = {
+        getLocation: function(cb) {
+            var extras = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            };
 
-    // The idle event is a debounced event, so we can query & listen without
-    // throwing too many requests at the server.
-	var data = {
-	location:"13.7563,100.5018",
-	lang:"en",
-	pagetoken:""
-	};
-	
-	getData(data,function(res){
-	console.log("res:",res)
-	performSearch(res)
-	});
-		
-   
-}
-window.lastJson;
-function performSearch(json) {
-lastJson = json;
+            navigator.geolocation.getCurrentPosition(function(pos) {
+                var coords = pos.coords;
+                cb(coords)
+            }, function(err) {
+                var default_coords = {
+                    latitude: 13.7563,
+                    longitude: 100.5018
+                };
+                console.log(err);
+                cb(default_coords)
+            }, extras);
+        },
+        getData: function(info, cb, searchData) {
+            var _this = this;
+            $.ajax({
+                type: "post",
+                url: "./datahelper/",
+                data: {
+                    data: JSON.stringify(info)
+                },
+                dataType: "JSON",
+                success: cb,
+                error: function(err) {
+                    console.log(err)
+                }
+            });
+        },
+        addMarker: function(place) {
 
-   /* var request = {
-        bounds: map.getBounds(),
-	   radius:"10",
-	   address:"Bangkok",
-	    componentRestrictions: {
-        country: 'Thailand'
-    },
-        keyword: "Tesco Lotus",
-		name:"Tesco Lotus",
-		type : "store"
-        
-    };
-    service.radarSearch(request, callback);*/
-//	console.log("json",json);
-	
-	if(filterType){
-	json = json["results"].filter(function(o){
-	if(filterType=="cdm"){
-	return o.name.toLowerCase().indexOf("cdm")>-1; // mean its a cash deposit machine
-}
-else{
-	return o.types[0]==filterType;    //replace with "atm"  or "bank" as per search
-}
-	});
-	}
-	else{
-	json = json["results"];
-	}
-	
-	callback(json)
-}
+            var icon_prefix = "images/scb-";
+            var icon_postfix = ".png";
 
-function callback(results, status) {
-   /* if (status !== google.maps.places.PlacesServiceStatus.OK) {
-        console.error(status);
-        return;
-    }*/
-	console.log("results",results);
-    for (var i = 0, result; result = results[i]; i++) {
-        addMarker(result);
-    }
-}
-
-function addMarker(place) {
-    var marker = new google.maps.Marker({
-        map: map,
-        position: place.geometry.location,
-        icon: {
-            url: 'https://developers.google.com/maps/documentation/javascript/images/circle.png',
-            anchor: new google.maps.Point(10, 10),
-            scaledSize: new google.maps.Size(10, 17)
-        }
-    });
-
-    google.maps.event.addListener(marker, 'click', function() {
-        service.getDetails(place, function(result, status) {
-            if (status !== google.maps.places.PlacesServiceStatus.OK) {
-                console.error(status);
-                return;
+            if (place.name.toLowerCase().indexOf("cdm") > -1) {
+                icon = icon_prefix + "cdm" + icon_postfix;
+            } else if (place.name.toLowerCase().indexOf("exchange") > -1) {
+                icon = icon_prefix + "exchange" + icon_postfix;
+            } else {
+                if (place.types[0] == "atm")
+                    icon = icon_prefix + "atm" + icon_postfix;
+                else
+                    icon = icon_prefix + "bank" + icon_postfix;
             }
-            infoWindow.setContent(result.name);
-            infoWindow.open(map, marker);
+
+            var marker = new google.maps.Marker({
+                map: map,
+                position: place.geometry.location,
+                icon: {
+                    url: icon,
+                    anchor: new google.maps.Point(10, 10),
+                    scaledSize: new google.maps.Size(30, 49)
+                }
+            });
+
+            google.maps.event.addListener(marker, 'click', function() {
+                service.getDetails(place, function(result, status) {
+                    if (status !== google.maps.places.PlacesServiceStatus.OK) {
+                        console.error(status);
+                        return;
+                    }
+                    infoWindow.setContent(result.name);
+                    infoWindow.open(map, marker);
+                });
+            });
+            markers.push(marker);
+        },
+        clearMarkers: function() {
+            for (var i = 0; i < markers.length; i++) {
+                markers[i].setMap(null);
+            }
+            markers.length = 0;
+        },
+        performSearch: function(json) {
+
+            if (json.status.toLowerCase() == "ok") {
+
+                var _this = this;
+                json = json || lastJson;
+                lastJson = json;
+                if (filterType.length) {
+                    var result = [];
+                    var finalRes = [];
+                    filterType.forEach(function(type) {
+                        result = json["results"].filter(function(o) {
+                            if (type == "cdm") {
+                                return o.name.toLowerCase().indexOf("cdm") > -1;
+                            } else if (type == "exchange") {
+                                return o.name.toLowerCase().indexOf("exchange") > -1;
+                            } else if (type == "atm" || type == "bank") {
+                                return o.types[0] == type;
+                            }
+                        });
+                        finalRes = finalRes.concat(result);
+                    });
+                    json = finalRes;
+                } else {
+                    json = json["results"];
+                }
+
+                for (var i = 0, result; result = json[i]; i++) {
+                    _this.addMarker(result);
+                }
+            } else console.warn(json.status);
+
+        }
+    };
+
+    var init = function(coords) {
+
+        map = new google.maps.Map(document.getElementById('mapview'), {
+            center: {
+                lat: coords.latitude,
+                lng: coords.longitude
+            },
+            zoom: 12,
+            zoomControl: true,
+            mapTypeControl: false,
+            scaleControl: true,
+            streetViewControl: false,
+            rotateControl: false,
+            fullscreenControl: true,
+            styles: [{
+                stylers: [{
+                    visibility: 'simplified'
+                }]
+            }, {
+                elementType: 'labels',
+                stylers: [{
+                    visibility: 'off'
+                }]
+            }]
         });
+
+        infoWindow = new google.maps.InfoWindow();
+        service = new google.maps.places.PlacesService(map);
+
+        var info = {
+            location: coords.latitude + "," + coords.longitude,
+            lang: "en",
+            pagetoken: ""
+        };
+
+        google.maps.event.addListener(map, "idle", function() {
+            google.maps.event.trigger(map, 'resize');
+        });
+        utils.getData(info, utils.performSearch);
+
+    };
+
+
+    utils.getLocation(init); 	//init map after taking user location.
+
+
+								//UI Controllers
+    $helper_sideBar.on('click', function() {
+        var $this = $(this);
+        var $sideBar = $("#" + $this.attr('data-for'));
+        $sideBar.add($this).toggleClass("active");
     });
-}
+	
+	$(window).width()>600 && $helper_sideBar.trigger("click");
+	
+    $filter_input.on('change', function() {
+        utils.clearMarkers();
+
+        var filter = $(this).val();
+        var index = filterType.indexOf(filter);
+        if (index == -1) {
+            filterType.push(filter)
+        } else {
+            filterType.splice(index, 1);
+        }
+        utils.performSearch()
+
+    });
+
+});
