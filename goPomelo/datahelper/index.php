@@ -2,8 +2,8 @@
 
 $apiKey = "AIzaSyCgqC1dHL2bd9YF02UW5CcJRMHMuPy3EaA";
 
-if(isset($_REQUEST['data'])){
-$data = json_decode($_REQUEST['data']);
+if(isset($_POST['data'])){
+$data = json_decode($_POST['data']);
 $location = $data->location;//"13.7563,100.5018";
 $language = $data->lang;//"en";
 $pagetoken = $data->pagetoken;
