@@ -31,21 +31,6 @@ jQuery(function($) {
                 cb(default_coords)
             }, extras);
         },
-        getData: function(info, cb, searchData) {
-            var _this = this;
-            $.ajax({
-                type: "post",
-                url: "./datahelper/",
-                data: {
-                    data: JSON.stringify(info)
-                },
-                dataType: "JSON",
-                success: cb,
-                error: function(err) {
-                    console.log(err)
-                }
-            });
-        },
         addMarker: function(place) {
 
             var icon_prefix = "images/scb-";
@@ -122,6 +107,21 @@ jQuery(function($) {
                 }
             } else console.warn(json.status);
 
+        },
+        getData: function(info, cb, searchData) {
+            var _this = this;
+            $.ajax({
+                type: "post",
+                url: "./datahelper/",
+                data: {
+                    data: JSON.stringify(info)
+                },
+                dataType: "JSON",
+                success: cb,
+                error: function(err) {
+                    console.log(err)
+                }
+            });
         }
     };
 
