@@ -1,0 +1,19 @@
+<html>
+
+    <head>
+    <% include partials/head %>
+    </head>
+
+    <body>
+        <header style="min-height: 50px;">
+            <% include partials/header %>
+        </header>
+        <div class="container">
+            <%- include(page) %>
+        </div>
+        <footer>
+            <% include partials/footer %>
+        </footer>
+    </body>
+
+</html>
