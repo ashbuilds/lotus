@@ -1,6 +1,6 @@
 <?php
 
-$apiKey = "AIzaSyCgqC1dHL2bd9YF02UW5CcJRMHMuPy3EaA";
+$apiKey = "AIzaSyDI4hdBgSMphXQiGsiBv0msTFjCtZXouXo";
 
 if(isset($_POST['data'])){
 $data = json_decode($_POST['data']);
