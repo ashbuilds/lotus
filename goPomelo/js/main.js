@@ -12,25 +12,6 @@ jQuery(function($) {
 
 
     var utils = {
-        getLocation: function(cb) {
-            var extras = {
-                enableHighAccuracy: true,
-                timeout: 5000,
-                maximumAge: 0
-            };
-
-            navigator.geolocation.getCurrentPosition(function(pos) {
-                var coords = pos.coords;
-                cb(coords)
-            }, function(err) {
-                var default_coords = {
-                    latitude: 13.7563,
-                    longitude: 100.5018
-                };
-                console.log(err);
-                cb(default_coords)
-            }, extras);
-        },
         addMarker: function(place) {
 
             var icon_prefix = "images/scb-";
@@ -122,7 +103,26 @@ jQuery(function($) {
                     console.log(err)
                 }
             });
-        }
+        },
+	getLocation: function(cb) {
+            var extras = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            };
+
+            navigator.geolocation.getCurrentPosition(function(pos) {
+                var coords = pos.coords;
+                cb(coords)
+            }, function(err) {
+                var default_coords = {
+                    latitude: 13.7563,
+                    longitude: 100.5018
+                };
+                console.log(err);
+                cb(default_coords)
+            }, extras);
+       }
     };
 
     var init = function(coords) {
