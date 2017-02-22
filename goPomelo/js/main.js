@@ -110,15 +110,19 @@ jQuery(function($) {
                 timeout: 5000,
                 maximumAge: 0
             };
-
-            navigator.geolocation.getCurrentPosition(function(pos) {
-                var coords = pos.coords;
-                cb(coords)
-            }, function(err) {
-                var default_coords = {
+		
+	    var default_coords = {
                     latitude: 13.7563,
                     longitude: 100.5018
-                };
+            };	
+		
+            navigator.geolocation.getCurrentPosition(function(pos) {
+                var coords = pos.coords;
+		    if(!coords){
+			coords = default_coords
+			}
+                cb(coords)
+            }, function(err) {
                 console.log(err);
                 cb(default_coords)
             }, extras);
