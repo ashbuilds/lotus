@@ -117,7 +117,7 @@ jQuery(function($) {
                     data: JSON.stringify(info)
                 },
                 dataType: "JSON",
-                success: cb,
+                success: function(json){ cb(json) },
                 error: function(err) {
                     console.log(err)
                 }
