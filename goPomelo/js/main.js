@@ -59,12 +59,10 @@ jQuery(function($) {
             markers.length = 0;
         },
         performSearch: function(json) {
-
-            if (json.status.toLowerCase() == "ok") {
-
                 var _this = this;
                 json = json || lastJson;
                 lastJson = json;
+            if (lastJson.status.toLowerCase() == "ok") {
                 if (filterType.length) {
                     var result = [];
                     var finalRes = [];
@@ -154,7 +152,7 @@ jQuery(function($) {
             }, {
                 elementType: 'labels',
                 stylers: [{
-                    visibility: 'off'
+                    visibility: 'on'
                 }]
             }]
         });
