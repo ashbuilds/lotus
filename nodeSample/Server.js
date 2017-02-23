@@ -3,7 +3,7 @@
  */
 
 var http = require("http");
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 1337;
 http.createServer(function (request, response) {
 
     // Send the HTTP header
