@@ -1,19 +1,25 @@
 /**
  * Created by indy-Ashish on 2/23/17.
  */
+ 
+// calling packages
+var express    = require('express');        // express
+var app        = express();                 // define express
+var bodyParser = require('body-parser');
 
-var http = require("http");
-var port = process.env.PORT || 1337;
-http.createServer(function (request, response) {
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-    // Send the HTTP header
-    // HTTP Status: 200 : OK
-    // Content Type: text/plain
-    response.writeHead(200, {'Content-Type': 'text/plain'});
+var port = process.env.PORT || 1337;     
 
-    // Send the response body as "Hello World"
-    response.end('Hello World\n');
-}).listen(port);
 
-// Console will print the message
-console.log('Server running...');
+var router = express.Router();           
+
+router.get('/', function(req, res) {
+    res.json({ message: 'Test api on azure' });   
+});
+
+app.use('/api', router);
+app.listen(port);
+
+console.log('Server on port : ' + port);
