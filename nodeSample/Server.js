@@ -28,4 +28,5 @@ router.get(path, function(req, res) {
 app.use(path+'api', router);
 app.listen(port);
 
+ console.log(__filename,__dirname);
 console.log('Server on port : ' + port);
