@@ -17,6 +17,7 @@ var router = express.Router();
 var path = "/";
 
 router.use(function(req, res, next) {
+ console.log("dir name : "__filename,__dirname);
     res.json({ filename: __filename,dirname: __dirname});   
     next(); 
 });
