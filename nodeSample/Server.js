@@ -15,6 +15,12 @@ var port = process.env.PORT || 1337;
 
 var router = express.Router();           
 var path = "/";
+
+router.use(function(req, res, next) {
+    res.json({ filename: __filename,dirname: __dirname});   
+    next(); 
+});
+
 router.get(path, function(req, res) {
     res.json({ message: 'Test api on azure' });   
 });
