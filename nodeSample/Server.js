@@ -14,12 +14,12 @@ var port = process.env.PORT || 1337;
 
 
 var router = express.Router();           
-var path = "/nodeSample";
+var path = "/";
 router.get(path, function(req, res) {
     res.json({ message: 'Test api on azure' });   
 });
 
-app.use(path+'/api', router);
+app.use(path+'api', router);
 app.listen(port);
 
 console.log('Server on port : ' + port);
