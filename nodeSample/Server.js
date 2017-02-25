@@ -10,9 +10,12 @@ var port = process.env.PORT || 1337;
 var router = express.Router();  
 
 router.use(function(req, res, next) {
-  res.send('Hello World');
+ console.log("req: ",req)
 });
-app.use('/', router);
+router.get("/", function(req, res) {
+   res.send('Hello World');
+});
+app.use('/api', router);
 app.listen(port);
 console.log('Server on port : ' + port);
 /*var http = require("http");
