@@ -9,7 +9,7 @@ var bodyParser = require('body-parser');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
+app.use(express.static(__dirname + '/../nodeSample'));
 var port = process.env.PORT || 1337;     
 
 
@@ -18,7 +18,7 @@ var router = express.Router();
 
 router.use(function(req, res, next) {
   res.json({ message: 'Test api on azure' });  
- console.log("dir name : ",__filename,__dirname);
+ //console.log("dir name : ",__filename,__dirname);
     
     next(); 
 });
