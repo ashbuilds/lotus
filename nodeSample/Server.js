@@ -14,6 +14,24 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
     console.log("Connected to Database !!")
 });
+<<<<<<< HEAD
+=======
+app.use('/', router);
+app.listen(port);
+console.log('Server on port : ' + port);
+/*var http = require("http");
+ var port = process.env.PORT || 1337;
+ http.createServer(function (request, response) {
+response.writeHead(200, {'Content-Type': 'text/plain'});
+   response.end( __dirname+' : Hello World\n');
+ }).listen(port);
+console.log('Server running...');*/
+// calling packages
+/*
+var express    = require('express');        // express
+var app        = express();                 // define express
+var bodyParser = require('body-parser');
+>>>>>>> f7ff455d9e402a88a5ba24920971c87b3b3471e1
 
 app.use(bodyParser.urlencoded({
     extended: true
